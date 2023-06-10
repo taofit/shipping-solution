@@ -12,10 +12,15 @@ import (
 	"github.com/flopp/go-coordsparser"
 )
 
+type RouteResponse struct {
+	Source string             `json:"source"`
+	Routes []DestinationRoute `json:"routes"`
+}
+
 type DestinationRoute struct {
-	destination string
-	duration    float32
-	distance    float32
+	Destination string  `json:"destination"`
+	Duration    float32 `json:"duration"`
+	Distance    float32 `json:"distance"`
 }
 
 type Route struct {
@@ -50,14 +55,14 @@ func ValidateParameters(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetList(w http.ResponseWriter, src string, dst []string) {
+func GetList(w http.ResponseWriter, src string, dst []string) (RouteResponse, error) {
 	destinations, err := getDestinations(src, dst)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+		return RouteResponse{}, err
 	}
 	destinationRoutes := sortDestinations(destinations)
-	fmt.Println(destinationRoutes)
+
+	return RouteResponse{Source: src, Routes: destinationRoutes}, nil
 }
 
 func getDestinations(src string, dst []string) ([]DestinationRoute, error) {
@@ -75,16 +80,14 @@ func getDestinations(src string, dst []string) ([]DestinationRoute, error) {
 		if err != nil {
 			return nil, err
 		}
-		// fmt.Println(body)
 		json.Unmarshal(body, &response)
 		if strings.ToLower(response.Code) != "ok" {
 			return nil, errors.New(response.Code)
 		}
-		// fmt.Println(response, response.Code, response.Routes[0].Distance, response.Routes[0].Duration)
 		destination = DestinationRoute{
-			destination: coor,
-			duration:    response.Routes[0].Duration,
-			distance:    response.Routes[0].Distance,
+			Destination: coor,
+			Duration:    response.Routes[0].Duration,
+			Distance:    response.Routes[0].Distance,
 		}
 		destinationRoutes = append(destinationRoutes, destination)
 	}
@@ -94,10 +97,10 @@ func getDestinations(src string, dst []string) ([]DestinationRoute, error) {
 
 func sortDestinations(destinationRoutes []DestinationRoute) []DestinationRoute {
 	sort.Slice(destinationRoutes, func(i, j int) bool {
-		if destinationRoutes[i].duration == destinationRoutes[j].duration {
-			return destinationRoutes[i].destination < destinationRoutes[j].destination
+		if destinationRoutes[i].Duration == destinationRoutes[j].Duration {
+			return destinationRoutes[i].Destination < destinationRoutes[j].Destination
 		}
-		return destinationRoutes[i].duration < destinationRoutes[j].duration
+		return destinationRoutes[i].Duration < destinationRoutes[j].Duration
 	})
 
 	return destinationRoutes
