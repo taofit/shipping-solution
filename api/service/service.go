@@ -28,34 +28,38 @@ type Route struct {
 	Distance float32 `json:"distance"`
 }
 
-type Response struct {
+type ThirdPartyResponse struct {
 	Code   string  `json:"code"`
 	Routes []Route `json:"routes"`
 }
 
-func ValidateParameters(w http.ResponseWriter, r *http.Request) {
-	src := r.URL.Query().Get("src")
-	_, _, err := coordsparser.Parse(src)
+func ValidateParameters(src []string, dst []string) string {
+	if src == nil {
+		return "source location is empty"
+	}
+	if len(src) > 1 {
+		return "only one source location can be provided"
+	}
+	_, _, err := coordsparser.Parse(src[0])
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+		return err.Error()
 	}
 
-	dst := r.URL.Query()["dst"]
 	if dst == nil {
-		http.Error(w, "dst is empty", http.StatusBadRequest)
-		return
+		return "destination location is empty"
 	}
+
 	for _, v := range dst {
 		_, _, err := coordsparser.Parse(v)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+			return err.Error()
 		}
 	}
+
+	return ""
 }
 
-func GetList(w http.ResponseWriter, src string, dst []string) (RouteResponse, error) {
+func GetList(src string, dst []string) (RouteResponse, error) {
 	destinations, err := getDestinations(src, dst)
 	if err != nil {
 		return RouteResponse{}, err
@@ -66,10 +70,10 @@ func GetList(w http.ResponseWriter, src string, dst []string) (RouteResponse, er
 }
 
 func getDestinations(src string, dst []string) ([]DestinationRoute, error) {
-	var response Response
+	var thirdPartyResponse ThirdPartyResponse
 	var destinationRoutes []DestinationRoute
 	var destination DestinationRoute
-	fmt.Println(dst)
+
 	for _, coor := range dst {
 		url := fmt.Sprintf("http://router.project-osrm.org/route/v1/driving/%s;%s?overview=false", src, coor)
 		res, err := http.Get(url)
@@ -80,14 +84,14 @@ func getDestinations(src string, dst []string) ([]DestinationRoute, error) {
 		if err != nil {
 			return nil, err
 		}
-		json.Unmarshal(body, &response)
-		if strings.ToLower(response.Code) != "ok" {
-			return nil, errors.New(response.Code)
+		json.Unmarshal(body, &thirdPartyResponse)
+		if strings.ToLower(thirdPartyResponse.Code) != "ok" {
+			return nil, errors.New(thirdPartyResponse.Code)
 		}
 		destination = DestinationRoute{
 			Destination: coor,
-			Duration:    response.Routes[0].Duration,
-			Distance:    response.Routes[0].Distance,
+			Duration:    thirdPartyResponse.Routes[0].Duration,
+			Distance:    thirdPartyResponse.Routes[0].Distance,
 		}
 		destinationRoutes = append(destinationRoutes, destination)
 	}

@@ -9,28 +9,28 @@ import (
 )
 
 func getListHandler(w http.ResponseWriter, r *http.Request) {
-	service.ValidateParameters(w, r)
-	src := r.URL.Query().Get("src")
+	src := r.URL.Query()["src"]
 	dst := r.URL.Query()["dst"]
-	routeResponse, err := service.GetList(w, src, dst)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusNoContent)
-		// internalServerError(w, r)
+	errorMsg := service.ValidateParameters(src, dst)
+	if errorMsg != "" {
+		http.Error(w, errorMsg, http.StatusBadRequest)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
+	routeResponse, err := service.GetList(src[0], dst)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	resp, err := json.Marshal(routeResponse)
 	if err != nil {
-		internalServerError(w, r)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Write(resp)
-}
 
-func internalServerError(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusInternalServerError)
-	w.Write([]byte("internal server error"))
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(resp)
 }
 
 func HandleRequests() {
