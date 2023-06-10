@@ -15,8 +15,7 @@ Thus, we want to answer the question: which destination is closest to the source
 how fast one can get there by car.
 The API call should look like this:
 GET
-http://your-service/routes?src=13.388860,52.517037&dst=13.397634,52.529407&dst=13.4285
-55,52.523219
+http://your-service/routes?src=13.388860,52.517037&dst=13.397634,52.529407&dst=13.428555,52.523219
 The response should look like this:
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -43,8 +42,7 @@ to
 get driving times and distances.
 Example request for OSRM you would be using is:
 curl
-'http://router.project-osrm.org/route/v1/driving/13.388860,52.517037;13.397634,52.5294
-07?overview=false'
+'http://router.project-osrm.org/route/v1/driving/13.388860,52.517037;13.397634,52.529407?overview=false'
 Example OSRM response is:
 {
 "routes": [
