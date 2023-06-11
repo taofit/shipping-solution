@@ -1,7 +1,7 @@
-FROM golang:1.19.4 as BUILD
+FROM golang:alpine as BUILD
 
-WORKDIR /app
+WORKDIR /testing
 
 COPY . .
 
-ENTRYPOINT ["go", "test", "-v"]
+ENTRYPOINT ["go", "test", "-v", "./...", "-coverprofile", "cover.out"]
