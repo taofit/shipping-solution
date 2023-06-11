@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/taofit/ingrid-shipping/api/handler"
+	"github.com/taofit/shipping-solution/api/handler"
 )
 
 func main() {

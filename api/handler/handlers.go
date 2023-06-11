@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/taofit/ingrid-shipping/api/service"
+	"github.com/taofit/shipping-solution/api/service"
 )
 
 func getListHandler(w http.ResponseWriter, r *http.Request) {
@@ -35,5 +35,7 @@ func getListHandler(w http.ResponseWriter, r *http.Request) {
 
 func HandleRequests() {
 	http.HandleFunc("/list", getListHandler)
+
+	log.Println("Listening on localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

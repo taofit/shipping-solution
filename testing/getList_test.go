@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/taofit/ingrid-shipping/api/service"
+	"github.com/taofit/shipping-solution/api/service"
 )
 
 type ListTest struct {

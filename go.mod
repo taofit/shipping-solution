@@ -1,4 +1,4 @@
-module github.com/taofit/ingrid-shipping
+module github.com/taofit/shipping-solution
 
 go 1.19
 
