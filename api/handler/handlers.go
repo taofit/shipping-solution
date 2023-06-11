@@ -35,5 +35,5 @@ func getListHandler(w http.ResponseWriter, r *http.Request) {
 
 func HandleRequests() {
 	http.HandleFunc("/list", getListHandler)
-	log.Fatal(http.ListenAndServe(":8082", nil))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
