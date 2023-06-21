@@ -33,49 +33,58 @@ type ThirdPartyResponse struct {
 	Routes []Route `json:"routes"`
 }
 
-func ValidateParameters(src []string, dst []string) string {
-	if src == nil {
-		return "source location is empty"
+type Parameters struct {
+	Src []string
+	Dst []string
+}
+
+type destinationRoutes struct {
+	fetchedDestinationRoutes []DestinationRoute
+}
+
+func (p Parameters) ValidateParameters() error {
+	if p.Src == nil {
+		return errors.New("source location is empty")
 	}
-	if len(src) > 1 {
-		return "only one source location can be provided"
+	if len(p.Src) > 1 {
+		return errors.New("only one source location can be provided")
 	}
-	_, _, err := coordsparser.Parse(src[0])
+	_, _, err := coordsparser.Parse(p.Src[0])
 	if err != nil {
-		return err.Error()
+		return err
 	}
 
-	if dst == nil {
-		return "destination location is empty"
+	if p.Dst == nil {
+		return errors.New("destination location is empty")
 	}
 
-	for _, v := range dst {
-		_, _, err := coordsparser.Parse(v)
+	for _, dst := range p.Dst {
+		_, _, err := coordsparser.Parse(dst)
 		if err != nil {
-			return err.Error()
+			return err
 		}
 	}
 
-	return ""
+	return nil
 }
 
-func GetList(src string, dst []string) (RouteResponse, error) {
-	destinations, err := getDestinations(src, dst)
+func (p Parameters) GetList() (RouteResponse, error) {
+	fetchedDestinationRoutes, err := p.getDestinationRoutes()
 	if err != nil {
 		return RouteResponse{}, err
 	}
-	destinationRoutes := sortDestinations(destinations)
+	destinationRoutes{fetchedDestinationRoutes}.sortDestinations()
 
-	return RouteResponse{Source: src, Routes: destinationRoutes}, nil
+	return RouteResponse{Source: p.Src[0], Routes: fetchedDestinationRoutes}, nil
 }
 
-func getDestinations(src string, dst []string) ([]DestinationRoute, error) {
+func (p Parameters) getDestinationRoutes() ([]DestinationRoute, error) {
 	var thirdPartyResponse ThirdPartyResponse
 	var destinationRoutes []DestinationRoute
-	var destination DestinationRoute
+	var destinationRoute DestinationRoute
 
-	for _, coor := range dst {
-		url := fmt.Sprintf("http://router.project-osrm.org/route/v1/driving/%s;%s?overview=false", src, coor)
+	for _, coor := range p.Dst {
+		url := fmt.Sprintf("http://router.project-osrm.org/route/v1/driving/%s;%s?overview=false", p.Src[0], coor)
 		res, err := http.Get(url)
 		if err != nil {
 			return nil, err
@@ -88,24 +97,22 @@ func getDestinations(src string, dst []string) ([]DestinationRoute, error) {
 		if strings.ToLower(thirdPartyResponse.Code) != "ok" {
 			return nil, errors.New(thirdPartyResponse.Code)
 		}
-		destination = DestinationRoute{
+		destinationRoute = DestinationRoute{
 			Destination: coor,
 			Duration:    thirdPartyResponse.Routes[0].Duration,
 			Distance:    thirdPartyResponse.Routes[0].Distance,
 		}
-		destinationRoutes = append(destinationRoutes, destination)
+		destinationRoutes = append(destinationRoutes, destinationRoute)
 	}
 
 	return destinationRoutes, nil
 }
 
-func sortDestinations(destinationRoutes []DestinationRoute) []DestinationRoute {
-	sort.Slice(destinationRoutes, func(i, j int) bool {
-		if destinationRoutes[i].Duration == destinationRoutes[j].Duration {
-			return destinationRoutes[i].Destination < destinationRoutes[j].Destination
+func (dr destinationRoutes) sortDestinations() {
+	sort.Slice(dr.fetchedDestinationRoutes, func(i, j int) bool {
+		if dr.fetchedDestinationRoutes[i].Duration == dr.fetchedDestinationRoutes[j].Duration {
+			return dr.fetchedDestinationRoutes[i].Destination < dr.fetchedDestinationRoutes[j].Destination
 		}
-		return destinationRoutes[i].Duration < destinationRoutes[j].Duration
+		return dr.fetchedDestinationRoutes[i].Duration < dr.fetchedDestinationRoutes[j].Duration
 	})
-
-	return destinationRoutes
 }

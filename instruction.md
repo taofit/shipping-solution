@@ -1,11 +1,16 @@
-# Ingrid Coding Assignment
-This is a small coding assignment to assess candidate's development skills.
+# 1ngr1d Coding Assignment
+
+This is a small coding assignment to assess a developer's golang skills.
+
 ## Task Background
-At Ingrid, we're building shipping solutions. One of the problems we face is
+
+At 1ngr1d, we're building shipping solutions. One of the problems we face is
 presenting
 a list of pickup locations available in customer area so that he can have his package
-delivered to the nearest location in his neighbourhood.
+delivered to the nearest location in his neighborhood.
+
 ## Description
+
 We need to build a small web service that takes the source and a list of destinations
 and returns a list of routes between source and each destination. Both source and
 destination are defined as a pair of latitude and longitude. The returned list of
@@ -35,74 +40,84 @@ Content-Type: application/json
 ]
 }
 Where input parameters are:
+
 - src - source location (customer's home), only one can be provided
 - dst - destination location (pickup point), multiple can be provided
-For this assignment, you must use http://project-osrm.org/ third-party router service
-to
-get driving times and distances.
-Example request for OSRM you would be using is:
-curl
-'http://router.project-osrm.org/route/v1/driving/13.388860,52.517037;13.397634,52.529407?overview=false'
-Example OSRM response is:
-{
-"routes": [
-{
-"legs": [
-{
-"summary": "",
-"weight": 634,
-"duration": 465.2,
-"steps": [],
-"distance": 1879.4
-}
-],
-"weight_name": "routability",
-"weight": 634,
-"duration": 465.2,
-"distance": 1879.4
-}
-],
-"waypoints": [
-{
-"hint":
-"DxQKgArnaoYoAAAAPwAAAA8AAAAAAAAAKAAAAD8AAAAPAAAAAAAAAC7rAAAATMwAqVghAzxMzACtWCEDAQDfC
-p4VrCU=",
-"name": "Friedrichstraße",
-"location": [
-13.3888,
-52.517033
-]
-},
-{
-"hint":
-"VFQUgPPB9YENAAAACwAAAF0BAAAAAAAADQAAAAsAAABdAQAAAAAAAC7rAAB_bswAGIkhA4JuzAD_iCEDAgCfE
-J4VrCU=",
-"name": "Torstraße",
-"location": [
-13.397631,
-52.529432
-]
-}
-],
-"code": "Ok"
-}
-Relevant parts of the response are `routes.0.duration`, `routes.0.distance` and `code`
-for error handling.
+  For this assignment, you must use http://project-osrm.org/ third-party router service
+  to
+  get driving times and distances.
+  Example request for OSRM you would be using is:
+  curl
+  'http://router.project-osrm.org/route/v1/driving/13.388860,52.517037;13.397634,52.529407?overview=false'
+  Example OSRM response is:
+  {
+  "routes": [
+  {
+  "legs": [
+  {
+  "summary": "",
+  "weight": 634,
+  "duration": 465.2,
+  "steps": [],
+  "distance": 1879.4
+  }
+  ],
+  "weight_name": "routability",
+  "weight": 634,
+  "duration": 465.2,
+  "distance": 1879.4
+  }
+  ],
+  "waypoints": [
+  {
+  "hint":
+  "DxQKgArnaoYoAAAAPwAAAA8AAAAAAAAAKAAAAD8AAAAPAAAAAAAAAC7rAAAATMwAqVghAzxMzACtWCEDAQDfC
+  p4VrCU=",
+  "name": "Friedrichstraße",
+  "location": [
+  13.3888,
+  52.517033
+  ]
+  },
+  {
+  "hint":
+  "VFQUgPPB9YENAAAACwAAAF0BAAAAAAAADQAAAAsAAABdAQAAAAAAAC7rAAB_bswAGIkhA4JuzAD_iCEDAgCfE
+  J4VrCU=",
+  "name": "Torstraße",
+  "location": [
+  13.397631,
+  52.529432
+  ]
+  }
+  ],
+  "code": "Ok"
+  }
+  Relevant parts of the response are `routes.0.duration`, `routes.0.distance` and `code`
+  for error handling.
+
 ## Technology Stack
+
 - Go
 - Any other 3rd party packages or frameworks that you want to use
+
 ## Requirements
+
 - We should be able to run the code on our computer. Hint: A good README.txt
-goes a long way
+  goes a long way
 - Tests are not mandatory due to the assignment's scope but good to have, for
-example to test your own sorting.
+  example to test your own sorting.
+
 ## What we are looking at
+
 Here is a list of what we are looking at when judging your work:
+
 - Ability to learn new technologies
 - Ability to translate requirements into working implementation
 - Ability to write code that is easy to follow and understand
 - Ability to document and explain non-coding requirements if there are any
+
 ## Bonus
+
 For extra credit, you can deploy your application to Google App Engine or some
 other PAAS provider and send us the link. There are many PAAS providers out
 there where you can host small applications free of change. Alternatively, you

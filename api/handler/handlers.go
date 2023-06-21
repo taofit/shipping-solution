@@ -11,12 +11,13 @@ import (
 func getListHandler(w http.ResponseWriter, r *http.Request) {
 	src := r.URL.Query()["src"]
 	dst := r.URL.Query()["dst"]
-	errorMsg := service.ValidateParameters(src, dst)
-	if errorMsg != "" {
-		http.Error(w, errorMsg, http.StatusBadRequest)
+	parameters := service.Parameters{Src: src, Dst: dst}
+	error := parameters.ValidateParameters()
+	if error != nil {
+		http.Error(w, error.Error(), http.StatusBadRequest)
 		return
 	}
-	routeResponse, err := service.GetList(src[0], dst)
+	routeResponse, err := parameters.GetList()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

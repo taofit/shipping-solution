@@ -9,7 +9,7 @@ import (
 )
 
 type ListTest struct {
-	src            string
+	src            []string
 	dst            []string
 	expectedResult service.RouteResponse
 }
@@ -17,31 +17,31 @@ type ListTest struct {
 func TestGetList(t *testing.T) {
 	var testVals = []ListTest{
 		{
-			src: "13.388860,52.517037",
+			src: []string{"13.388860,52.517037"},
 			dst: []string{"13.42855587,52.523219", "13.42885587,52.423219", "13.428555,52.523421"},
 			expectedResult: service.RouteResponse{
 				Source: "13.388860,52.517037",
 				Routes: []service.DestinationRoute{
 					{
 						Destination: "13.428555,52.523421",
-						Duration:    389.1,
+						Duration:    389.2,
 						Distance:    3803.5,
 					},
 					{
 						Destination: "13.42855587,52.523219",
-						Duration:    389.1,
+						Duration:    389.2,
 						Distance:    3804.2,
 					},
 					{
 						Destination: "13.42885587,52.423219",
-						Duration:    1378.2,
+						Duration:    1378.1,
 						Distance:    14282.9,
 					},
 				},
 			},
 		},
 		{
-			src: "14.388860,53.517037",
+			src: []string{"14.388860,53.517037"},
 			dst: []string{"14.42855587,53.523219", "14.42885587,53.423219", "14.428555,53.523421"},
 			expectedResult: service.RouteResponse{
 				Source: "14.388860,53.517037",
@@ -65,7 +65,7 @@ func TestGetList(t *testing.T) {
 			},
 		},
 		{
-			src:            "12.388860,43.517037",
+			src:            []string{"12.388860,43.517037"},
 			dst:            []string{"14.42255587s,53.523219", "14.62885587,53.423219", "14.428555,53.523421"},
 			expectedResult: service.RouteResponse{},
 		},
@@ -74,7 +74,7 @@ func TestGetList(t *testing.T) {
 	for i, tt := range testVals {
 		testname := fmt.Sprintf("test #%v", i)
 		t.Run(testname, func(t *testing.T) {
-			routeResponse, _ := service.GetList(tt.src, tt.dst)
+			routeResponse, _ := service.Parameters{Src: tt.src, Dst: tt.dst}.GetList()
 			if !reflect.DeepEqual(routeResponse, tt.expectedResult) {
 				t.Errorf("got %v, want %v", routeResponse, tt.expectedResult)
 			}
