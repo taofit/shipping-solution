@@ -94,29 +94,5 @@ Where input parameters are:
 ## Technology Stack
 
 - Go
-- Any other 3rd party packages or frameworks that you want to use
+- some other 3rd party packages or frameworks 
 
-## Requirements
-
-- We should be able to run the code on our computer. Hint: A good README.txt
-  goes a long way
-- Tests are not mandatory due to the assignment's scope but good to have, for
-  example to test your own sorting.
-
-## What we are looking at
-
-Here is a list of what we are looking at when judging your work:
-
-- Ability to learn new technologies
-- Ability to translate requirements into working implementation
-- Ability to write code that is easy to follow and understand
-- Ability to document and explain non-coding requirements if there are any
-
-## Bonus
-
-For extra credit, you can deploy your application to Google App Engine or some
-other PAAS provider and send us the link. There are many PAAS providers out
-there where you can host small applications free of change. Alternatively, you
-can create a Docker image or Dockerfile with instructions how to build and run
-your solution. Feel free to improve the solution if you think that we didn't
-think of something important!
