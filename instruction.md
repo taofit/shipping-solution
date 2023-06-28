@@ -1,10 +1,6 @@
-# 1ngr1d Coding Assignment
-
-This is a small coding assignment to assess a developer's golang skills.
-
 ## Task Background
 
-At 1ngr1d, we're building shipping solutions. One of the problems we face is
+The company is building shipping solutions. One of the problems the company faces is
 presenting
 a list of pickup locations available in customer area so that he can have his package
 delivered to the nearest location in his neighborhood.
